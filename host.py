@@ -1,5 +1,6 @@
-from bottle import run, get, post, static_file, template
-from face_recognition import GetFace as face
+from lib.bottle import run, get, post, static_file, template
+from picam import fetch
+from bell import warning
 
 @get('/')
 def index():
@@ -14,30 +15,11 @@ def response(name):
     print(name)
 
 @post('/fetch')
-def test():
-    face()
+def picture():
+    fetch()
+
+@post('/warning')
+def bell():
+    warning()
 
 run(host='localhost', port=8080)
-
-# @get('/')
-# def login():
-#     return '''
-#         <form action="/index" method="post">
-#             Username: <input name="username" type="text" />
-#             Password: <input name="password" type="password" />
-#             <input value="Login" type="submit" />
-#         </form>
-#     '''
-
-# @post('/index')
-# def do_login():
-#     username = request.forms.get('username')
-#     password = request.forms.get('password')
-#     def check_login(username, password):
-#         if username == 'xwx' and password == 'Hh20011212.':
-#             return True
-#     if check_login(username, password):
-#         return template("index")
-#     else:
-#         return "<p>Login failed.</p>"
-

@@ -8,23 +8,24 @@
     <script>
         $(function(){
             $("button").click(function(){
-                cmd="{cmd:"+this.id+"}"
+                // cmd="{cmd:"+this.id+"}"
                 // alert(cmd)
+                window.history.go(0);
                 $.post(this.id);
             });
-
         });
-
     </script>
 </head>
-<body>
-        <button id='cam-up' type="button">UP!</button>
-        <button id='cam-down' type="button">DOWN!</button>
-        <button id='cam-left' type="button">LEFT!</button>
-        <button id='cam-right' type="button">RIGHT!</button>
-        <button id='fetch' type="button">RIGHT!</button>
-        <br>
-        <img src="/result.jpg">
 
+<body>
+        <button id='cam-up' type="button">UP</button>
+        <button id='cam-down' type="button">DOWN</button>
+        <button id='cam-left' type="button">LEFT</button>
+        <button id='cam-right' type="button">RIGHT</button>
+        <br>
+        <button id='fetch' type="button">FETCH</button>
+        <button id='warning' type="button">!WARNING!</button>
+        <br>
+        <img src="result.jpg">
 </body>
 </html>
