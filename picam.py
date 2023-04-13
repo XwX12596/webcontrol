@@ -1,5 +1,6 @@
 from picamera import PiCamera 
 from time import sleep
+import time
 import numpy as np
 import cv2
 
@@ -19,6 +20,10 @@ def GetFace(imname):
 def fetch():
     camera = PiCamera()
     camera.resolution = (640, 360)
-    camera.capture('./image/original.jpg')
+    pic_name = 'original.jpg'
+    camera.capture(pic_name)
     camera.close()
-    GetFace(imname='./image/original.jpg')
+    GetFace(imname=pic_name)
+
+if __name__=='__main__':
+    fetch()
