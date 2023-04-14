@@ -20,8 +20,6 @@
 <body>
         <button id='cam-up' type="button">UP</button>
         <button id='cam-down' type="button">DOWN</button>
-        <button id='cam-left' type="button">LEFT</button>
-        <button id='cam-right' type="button">RIGHT</button>
         <br>
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
