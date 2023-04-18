@@ -11,7 +11,7 @@ def GetFace(imname):
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     for (x, y, w, h) in faces:
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-    result_name = './image/result.jpg' + '?' + time.strftime("%Y%m%d%M%S")
+    result_name = '/home/xmh/webcontrol/image/result.jpg'
     cv2.imwrite(result_name, image)
     if len(faces) != 0:
         print('Face!')
@@ -21,10 +21,10 @@ def GetFace(imname):
 def fetch():
     camera = PiCamera()
     camera.resolution = (640, 360)
-    pic_name = 'original.jpg'
+    pic_name = '/home/xmh/webcontrol/image/original.jpg'
     camera.capture(pic_name)
     camera.close()
-    GetFace(imname=pic_name)
+    #GetFace(imname=pic_name)
 
 if __name__=='__main__':
     fetch()
