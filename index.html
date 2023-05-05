@@ -4,26 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Raspi</title>
+    <meta>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <!--<meta http-equiv="Expires" content="0"> -->
     <script src="http://code.jquery.com/jquery.js"></script>
     <script>
         $(function(){
             $("button").click(function(){
-                // cmd="{cmd:"+this.id+"}"
-                // alert(cmd)
                 window.history.go(0);
-                $.post(this.id);
+                if (this.id == "updateWait"){
+                    text = document.getElementById("wait").value;
+                    $.post("updateWait" + text);
+                }
+                else if (this.id == "fetch"){
+                    var img = document.getElementById("result");
+                    var params=JSON.stringify({"header":{"platform":"xxx","session":"xxx","timestamp":1637312020486}})
+                    var url = 'http://127.0.0.1:5500/image/result.jpg';
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST',url,true);
+                    xhr.responseType="blob";
+                    xhr.onload = function(){
+                        if(this.status===200){
+                            var blob = this.response;
+                            if(blob.type.indexOf("image")>=0){
+                                var reader = new FileReader();
+                                reader.readAsDataURL(blob);
+                                reader.onload=function(e){
+                                    var bf = this.result;
+                                    console.log(bf);
+                                    img.src = bf;
+                                }
+                            }
+                        }
+                    }
+                    xhr.setRequestHeader('Content-Type','application/json');
+                    xhr.send(params);
+                }
+                else{
+                    $.post(this.id);
+                }
             });
         });
     </script>
 </head>
 
 <body>
-        <button id='cam-up' type="button">UP</button>
-        <button id='cam-down' type="button">DOWN</button>
+        <input type="text" name="number" id="wait">
+        <button type="button" id="updateWait">update</button>
+        <br>
+        <button id='15' type="button">15</button>
+        <button id='30' type="button">30</button>
+        <button id='45' type="button">45</button>
+        <button id='60' type="button">60</button>
+        <button id='75' type="button">75</button>
+        <button id='90' type="button">90</button>
         <br>
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
         <br>
-        <img src="image/result.jpg">
+        <img id="result" src="result.jpg">
 </body>
 </html>

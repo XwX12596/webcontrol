@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>New Document</title>
+	<meta name="generator" content="EverEdit" />
+	<meta name="author" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<script src="jquery-3.3.1.min.js"></script>
+	
+</head>
+<body>
+	<div id="div">
+		</div>
+
+	<button>点我</button>
+	<img id="img"/>
+</body>
+<script>
+
+		$(document).ready(function(){
+			$("button").click(function(){
+				var img = document.getElementById("img");
+				var params=JSON.stringify({"header":{"platform":"xxx","session":"xxx","timestamp":1637312020486}})
+				var url = './image/result.jpg';
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST',url,true);
+				xhr.responseType="blob";
+				xhr.onload = function(){
+					if(this.status===200){
+						var blob = this.response;
+						if(blob.type.indexOf("image")>=0){
+							var reader = new FileReader();
+							reader.readAsDataURL(blob);
+							reader.onload=function(e){
+								var bf = this.result;
+								console.log(bf);
+								img.src = bf;
+							}
+						}
+					}
+				}
+				xhr.setRequestHeader('Content-Type','application/json');
+				xhr.send(params);
+			})
+		})
+	</script>
+</html>
+

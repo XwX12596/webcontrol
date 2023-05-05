@@ -11,16 +11,23 @@
     <script>
         $(function(){
             $("button").click(function(){
-                // cmd="{cmd:"+this.id+"}"
-                // alert(cmd)
                 window.history.go(0);
-                $.post(this.id);
+                if (this.id == "updateWait"){
+                    text = document.getElementById("wait").value;
+                    $.post("updateWait" + text);
+                }
+                else{
+                    $.post(this.id);
+                }
             });
         });
     </script>
 </head>
 
 <body>
+        <input type="text" name="number" id="wait">
+        <button type="button" id="updateWait">update</button>
+        <br>
         <button id='15' type="button">15</button>
         <button id='30' type="button">30</button>
         <button id='45' type="button">45</button>
@@ -31,6 +38,6 @@
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
         <br>
-        <img src="original.jpg">
+        <img id="result" src="result.jpg">
 </body>
 </html>
