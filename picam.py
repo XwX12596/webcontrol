@@ -28,9 +28,11 @@ def fetch():
     camera.capture(pic_name)
     camera.close()
     if GetFace(imname=pic_name) == 1:
-        return 1
-    else:
-        return 0
+        warning()
+        f = open("sendkey")
+        sendkey = f.read()
+        get_url = "https://sctapi.ftqq.com/" + sendkey + ".send?title=warning"
+        req("GET", get_url)
 
 if __name__=='__main__':
     fetch()

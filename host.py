@@ -12,7 +12,7 @@ class picam_server():
         gs90_angle(45)
         time.sleep(0.3)
         gs90_angle('stop')
-        self.fetchTime = 1
+        self.fetchTime = 10
 
     @get('/')
     def index():
@@ -42,6 +42,7 @@ class picam_server():
     @post('/<time:re:updateWait[0-9]*>')
     def updateWait(time):
         print(time)
+        self.fetchTime = time
 
 
     def start(self):
@@ -64,12 +65,7 @@ class picam_server():
     def timer(self):
         while True:
             time.sleep(self.fetchTime)
-            if fetch() == 1:
-                warning()
-                f = open("sendkey")
-                sendkey = f.read()
-                get_url = "https://sctapi.ftqq.com/" + sendkey + ".send?title=warning"
-                req("GET", get_url)
+            fetch()
         
 if __name__ == '__main__':
     server = picam_server()
