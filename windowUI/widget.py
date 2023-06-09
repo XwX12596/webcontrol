@@ -1,0 +1,53 @@
+# This Python file uses the following encoding: utf-8
+import sys
+
+from PyQt5.QtWidgets import QApplication, QWidget, QGraphicsScene
+from PyQt5.QtGui import QPixmap
+
+from ui_form import Ui_PiCam
+
+from functions import fetch, warning, angUPD, intUPD, getImage
+
+class PiCam(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_PiCam()
+        self.ui.setupUi(self)
+        self.UI_connect()
+        self.window_init()
+
+    def window_init(self):
+        self.scene = QGraphicsScene()
+
+    def UI_connect(self):
+        self.ui.fetch.clicked.connect(self.fetch)
+        self.ui.warning.clicked.connect(self.warning)
+        self.ui.int_BTN.clicked.connect(self.intUPD)
+        self.ui.ang_BTN.clicked.connect(self.angUPD)
+
+    def fetch(self):
+        fetch()
+        getImage()
+        self.pic = QPixmap("./image/result.jpg") 
+        self.scene.addPixmap(self.pic.scaled(800, 450))
+        self.ui.pic.setScene(self.scene)
+    def warning(self):
+        warning()
+    def intUPD(self):
+        time = self.ui.int_LE.text()
+        if time != '':
+            intUPD(time)
+        else:
+            self.ui.int_LE.setText("Please Enter A Interval Number!")
+    def angUPD(self):
+        ang = self.ui.ang_LE.text()
+        if ang != '':
+            angUPD(ang)
+        else:
+            self.ui.ang_LE.setText("Please Enter A Angle Number!")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    widget = PiCam()
+    widget.show()
+    sys.exit(app.exec())
