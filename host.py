@@ -16,7 +16,7 @@ class picam_server():
         gs90_angle(45)
         time.sleep(0.3)
         gs90_angle('stop')
-        self.fetchTime = 10
+        self.fetchTime = 5
 
     @route('/')
     def index():
@@ -70,7 +70,19 @@ class picam_server():
         response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
         return generate()
 
+    def streamStart(self):
+        self.mjpg = mjpg_stream()
+        self.mjpg.run()
+        print("mjpg_stream running")
 
+    def host(self):
+        run(host='0.0.0.0', port=8000)
+
+    def timer(self):
+        while True:
+            time.sleep(self.fetchTime)
+            fetch()
+            print("autoFetching")
     def start(self):
         t1 = threading.Thread(target=self.host)
         t1.daemon = True
@@ -88,20 +100,7 @@ class picam_server():
                 self.mjpg.stop()
                 print("end")
                 sys.exit(0)
-    def streamStart(self):
-        self.mjpg = mjpg_stream()
-        self.mjpg.run()
-        print("mjpg_stream running")
 
-    def host(self):
-        run(host='0.0.0.0', port=8000)
-        
-    def timer(self):
-        while True:
-            time.sleep(self.fetchTime)
-            fetch()
-            print("autoFetching")
-        
 if __name__ == '__main__':
     server = picam_server()
-    server.host()
+    server.start()
