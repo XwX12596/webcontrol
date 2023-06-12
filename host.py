@@ -1,4 +1,5 @@
 import io
+import sys
 import logging
 import picamera
 import time
@@ -8,7 +9,8 @@ from picam import fetch
 from motor import gs90_angle
 from bell import warning
 from threading import Condition
-import sys
+from stream import mjpg_stream
+
 
 class StreamingOutput(object):
     def __init__(self):
@@ -90,17 +92,14 @@ class picam_server():
             try:
                 t2.join(0.1)
             except KeyboardInterrupt:
+                self.mjpg.stop()
                 print("end")
                 sys.exit(0)
         
     def host(self):
-        with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
-            output = StreamingOutput()
-            camera.start_recording(output, format='mjpeg')
-    
-            run(host='0.0.0.0', port=8000)
-
-            camera.stop_recording()
+        self.mjpg = mjpg_stream()
+        self.mjpg.run()
+        run(host='0.0.0.0', port=8000)
         
     def timer(self):
         while True:
