@@ -1,10 +1,29 @@
-from lib.bottle import run, route, post, static_file, template
+import io
+import logging
+import picamera
+import time
+import threading
+from lib.bottle import run, route, post, response, template
 from picam import fetch
 from motor import gs90_angle
 from bell import warning
-import time
-import threading
+from threading import Condition
 import sys
+
+class StreamingOutput(object):
+    def __init__(self):
+        self.frame = None
+        self.buffer = io.BytesIO()
+        self.condition = Condition()
+
+    def write(self, buf):
+        if buf.startswith(b'\xff\xd8'):
+            self.buffer.truncate()
+            with self.condition:
+                self.frame = self.buffer.getvalue()
+                self.condition.notify_all()
+            self.buffer.seek(0)
+        return self.buffer.write(buf)
 
 class picam_server():
     def __init__(self):
@@ -12,23 +31,10 @@ class picam_server():
         time.sleep(0.3)
         gs90_angle('stop')
         self.fetchTime = 10
-        self.frame = None
-        self.buffer = io.BytesIO()
-        self.condition = Condition()
 
     @route('/')
     def index():
-        response.status = 301
-        response.set_header('Location', '/index.html')
-        return
-    
-    @route('/index.html')
-    def html_page():
-        content = PAGE.encode('utf-8')
-        response.status = 200
-        response.set_header('Content-Type', 'text/html')
-        response.set_header('Content-Length', len(content))
-        return content
+        return template("index")
 
     @post('/fetch')
     def picture():
@@ -88,7 +94,13 @@ class picam_server():
                 sys.exit(0)
         
     def host(self):
-        run(host='0.0.0.0', port=25565, reloader=True)
+        with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+            output = StreamingOutput()
+            camera.start_recording(output, format='mjpeg')
+    
+            run(host='0.0.0.0', port=8000)
+
+            camera.stop_recording()
         
     def timer(self):
         while True:
@@ -98,4 +110,4 @@ class picam_server():
         
 if __name__ == '__main__':
     server = picam_server()
-    server.start()
+    server.host()

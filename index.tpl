@@ -25,7 +25,6 @@
         <input type="text" name="number" id="wait">
         <button type="button" id="updateWait">update</button>
         <br>
-<<<<<<< HEAD
         <button id='15' type="button">15</button>
         <button id='30' type="button">30</button>
         <button id='45' type="button">45</button>
@@ -33,10 +32,6 @@
         <button id='75' type="button">75</button>
         <button id='90' type="button">90</button>
         <br>
-	<img src="http://10.42.0.211:8000/stream.mjpg" width="640" height="480">
-	<br>
-=======
->>>>>>> origin/master
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
         <br>
