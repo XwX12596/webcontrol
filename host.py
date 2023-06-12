@@ -84,18 +84,18 @@ class picam_server():
         return generate()
 
     def host(self):
-        run(host='0.0.0.0', port=8000)
+        with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+            output = StreamingOutput()
+            camera.start_recording(output, format='mjpeg')
+            run(host='0.0.0.0', port=8000)
+            camera.stop_recording()
 
     def timer(self):
         while True:
             time.sleep(self.fetchTime)
             #fetch()
             print("autoFetching")
-    def runStream(self):
-        with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
-            output = StreamingOutput()
-            camera.start_recording(output, format='mjpeg')
-            camera.stop_recording()
+
     def start(self):
         t1 = threading.Thread(target=self.host)
         t1.daemon = True
@@ -103,9 +103,6 @@ class picam_server():
         t2 = threading.Thread(target=self.timer)
         t2.daemon = True
         t2.start()
-        t3 = threading.Thread(target=self.runStream)
-        t3.daemon = True
-        t3.start()
         while True:
             try:
                 t2.join(0.1)
