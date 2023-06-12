@@ -71,19 +71,17 @@ class picam_server():
                 with output.condition:
                     output.condition.wait()
                     frame = output.frame
-                    print("2")
+                print("2")
                 yield b'--FRAME\r\n'
                 yield b'Content-Type: image/jpeg\r\n'
                 yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
                 yield frame
                 yield b'\r\n'
-        print("3")
         response.status = 200
         response.set_header('Age', '0')
         response.set_header('Cache-Control', 'no-cache, private')
         response.set_header('Pragma', 'no-cache')
         response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
-        print("4")
         return generate()
 
     def host(self):
