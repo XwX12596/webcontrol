@@ -1,6 +1,7 @@
 from lib.bottle import run, get, post, static_file, template
 from picam import fetch
 from motor import gs90_angle
+from bell import warning
 import time
 import threading
 import sys
