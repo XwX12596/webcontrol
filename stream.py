@@ -1,8 +1,14 @@
 import io
-import picamera
 import logging
+import picamera
+import time
+import threading
+from bottle import run, route, post, response, template
+from picam import fetch
+from motor import gs90_angle
+from bell import warning
 from threading import Condition
-from bottle import route, run, response
+import sys
 
 PAGE = """\
 <html>
@@ -39,13 +45,17 @@ def index():
     response.set_header('Location', '/index.html')
     return
 
+# @route('/index.html')
+# def html_page():
+#     content = PAGE.encode('utf-8')
+#     response.status = 200
+#     response.set_header('Content-Type', 'text/html')
+#     response.set_header('Content-Length', len(content))
+#     return content
+
 @route('/index.html')
-def html_page():
-    content = PAGE.encode('utf-8')
-    response.status = 200
-    response.set_header('Content-Type', 'text/html')
-    response.set_header('Content-Length', len(content))
-    return content
+    def html_page():
+        return template("index")
 
 @route('/stream.mjpg')
 def stream():
