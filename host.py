@@ -25,26 +25,6 @@ class StreamingOutput(object):
             self.buffer.seek(0)
         return self.buffer.write(buf)
 
-@route('/stream.mjpg')
-def stream():
-    def generate():
-        while True:
-            with output.condition:
-                output.condition.wait()
-                frame = output.frame
-            yield b'--FRAME\r\n'
-            yield b'Content-Type: image/jpeg\r\n'
-            yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
-            yield frame
-            yield b'\r\n'
-
-    response.status = 200
-    response.set_header('Age', '0')
-    response.set_header('Cache-Control', 'no-cache, private')
-    response.set_header('Pragma', 'no-cache')
-    response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
-    return generate()
-
 def runStream():
     with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
         output = StreamingOutput()
@@ -88,6 +68,26 @@ class picam_server():
     def updateWait(time):
         print(time)
         self.fetchTime = time
+
+    @route('/stream.mjpg')
+    def stream():
+        def generate():
+            while True:
+                with output.condition:
+                    output.condition.wait()
+                    frame = output.frame
+                yield b'--FRAME\r\n'
+                yield b'Content-Type: image/jpeg\r\n'
+                yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
+                yield frame
+                yield b'\r\n'
+
+        response.status = 200
+        response.set_header('Age', '0')
+        response.set_header('Cache-Control', 'no-cache, private')
+        response.set_header('Pragma', 'no-cache')
+        response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
+        return generate()
 
     def streamStart(self):
         self.mjpg = mjpg_stream()
