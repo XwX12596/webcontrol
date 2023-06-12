@@ -63,6 +63,7 @@ class picam_server():
         while True:
             time.sleep(self.fetchTime)
             fetch()
+            print("autoFetching")
         
 if __name__ == '__main__':
     server = picam_server()
