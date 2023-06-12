@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Raspi</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <!--<meta http-equiv="Expires" content="0"> -->
     <script src="http://code.jquery.com/jquery.js"></script>
     <script>
         $(function(){
@@ -28,6 +25,7 @@
         <input type="text" name="number" id="wait">
         <button type="button" id="updateWait">update</button>
         <br>
+<<<<<<< HEAD
         <button id='15' type="button">15</button>
         <button id='30' type="button">30</button>
         <button id='45' type="button">45</button>
@@ -37,9 +35,11 @@
         <br>
 	<img src="http://10.42.0.211:8000/stream.mjpg" width="640" height="480">
 	<br>
+=======
+>>>>>>> origin/master
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
         <br>
-        <img id="result" src="result.jpg">
+        <img src="stream.mjpg" width="640" height="480">
 </body>
 </html>
