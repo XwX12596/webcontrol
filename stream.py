@@ -10,17 +10,7 @@ from bell import warning
 from threading import Condition
 import sys
 
-PAGE = """\
-<html>
-<head>
-<title>picamera MJPEG streaming demo</title>
-</head>
-<body>
-<h1>PiCamera MJPEG Streaming Demo</h1>
-<img src="stream.mjpg" width="640" height="480" />
-</body>
-</html>
-"""
+interval = 20
 
 class StreamingOutput(object):
     def __init__(self):
@@ -30,8 +20,6 @@ class StreamingOutput(object):
 
     def write(self, buf):
         if buf.startswith(b'\xff\xd8'):
-            # New frame, copy the existing buffer's content and notify all
-            # clients it's available
             self.buffer.truncate()
             with self.condition:
                 self.frame = self.buffer.getvalue()
@@ -44,14 +32,6 @@ def index():
     response.status = 301
     response.set_header('Location', '/index.html')
     return
-
-# @route('/index.html')
-# def html_page():
-#     content = PAGE.encode('utf-8')
-#     response.status = 200
-#     response.set_header('Content-Type', 'text/html')
-#     response.set_header('Content-Length', len(content))
-#     return content
 
 @route('/index.html')
     def html_page():
@@ -76,6 +56,27 @@ def stream():
     response.set_header('Pragma', 'no-cache')
     response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
     return generate()
+
+@post('/fetch')
+def picture():
+    fetch()
+
+@post('/warning')
+def bell():
+    warning()
+
+@post('/<angle:re:[0-9]+>')
+def moveCam(angle):
+    print(angle)
+    gs90_angle(int(angle))
+    time.sleep(0.3)
+    gs90_angle('stop')
+    gs90_pwm.stop()
+
+@post('/<time:re:updateWait[0-9]*>')
+def updateWait(time):
+    print(time)
+    interval = time
 
 with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
     output = StreamingOutput()
