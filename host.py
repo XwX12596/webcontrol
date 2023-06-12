@@ -10,20 +10,26 @@ from motor import gs90_angle
 from bell import warning
 from threading import Condition
 
-class StreamingOutput(object):
-    def __init__(self):
-        self.frame = None
-        self.buffer = io.BytesIO()
-        self.condition = Condition()
+def stream():
+    class StreamingOutput(object):
+        def __init__(self):
+            self.frame = None
+            self.buffer = io.BytesIO()
+            self.condition = Condition()
 
-    def write(self, buf):
-        if buf.startswith(b'\xff\xd8'):
-            self.buffer.truncate()
-            with self.condition:
-                self.frame = self.buffer.getvalue()
-                self.condition.notify_all()
-            self.buffer.seek(0)
-        return self.buffer.write(buf)
+        def write(self, buf):
+            if buf.startswith(b'\xff\xd8'):
+                self.buffer.truncate()
+                with self.condition:
+                    self.frame = self.buffer.getvalue()
+                    self.condition.notify_all()
+                self.buffer.seek(0)
+            return self.buffer.write(buf)
+    with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+            output = StreamingOutput()
+            camera.start_recording(output, format='mjpeg')
+            run(host='0.0.0.0', port=8000)
+            camera.stop_recording()
 #
 # class picam_server():
 #     def __init__(self):
@@ -105,8 +111,4 @@ def stream():
     #             sys.exit(0)
 
 if __name__ == '__main__':
-    with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
-        output = StreamingOutput()
-        camera.start_recording(output, format='mjpeg')
-        run(host='0.0.0.0', port=8000)
-        camera.stop_recording()
+    stream()
