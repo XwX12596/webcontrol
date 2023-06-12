@@ -3,6 +3,7 @@ from time import sleep
 import time
 import numpy as np
 import cv2
+from requests import request as req
 
 def GetFace(imname):
     image = cv2.imread(imname)
@@ -28,7 +29,6 @@ def fetch():
     camera.capture(pic_name)
     camera.close()
     if GetFace(imname=pic_name) == 1:
-        warning()
         f = open("sendkey")
         sendkey = f.read()
         get_url = "https://sctapi.ftqq.com/" + sendkey + ".send?title=warning"

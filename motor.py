@@ -14,10 +14,7 @@ gs90_pwm.start(0)
 def gs90_angle(angle):
     '''angle 输入0-180度 如果输入 'stop' 则停止'''
     if isinstance(angle, str):  
-        if angle.upper() == 'STOP':
             gs90_pwm.ChangeDutyCycle(0)  
-        else:
-            print('输入有误')
     elif isinstance(angle, int) or isinstance(angle, float):  
         gs90_pwm.ChangeDutyCycle(2.5 + angle * 10 / 180)  
 
