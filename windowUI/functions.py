@@ -8,7 +8,7 @@ def warning(url):
     post(url+"warning")
 
 def angUPD(ang,url):
-    post(url+"angle"+str(ang))
+    post(url+str(ang))
 
 def intUPD(time,url):
     post(url+"updateWait"+str(time))
