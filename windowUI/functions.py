@@ -1,24 +1,21 @@
 from requests import post, get
 
-url = "http://127.0.0.1/"
 
-def fetch():
+def fetch(url):
     post(url+"fetch")
 
-def warning():
+def warning(url):
     post(url+"warning")
 
-def angUPD(ang):
+def angUPD(ang,url):
     post(url+"angle"+str(ang))
 
-def intUPD(time):
+def intUPD(time,url):
     post(url+"updateWait"+str(time))
 
-def getImage():
+def getImage(url):
     img = get(url+"result.jpg")
     with open("./image/result.jpg","wb") as f:
         for chunk in img:
             f.write(chunk)
 
-if __name__ == "__main__":
-    timeUPD(5)

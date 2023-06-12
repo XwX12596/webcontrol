@@ -13,7 +13,31 @@
   <property name="windowTitle">
    <string>MyWidget</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="12,2,1">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,5">
+     <item>
+      <widget class="QLabel" name="ip_LB">
+       <property name="text">
+        <string>URL</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ip_LE"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="link">
+     <property name="text">
+      <string>Link Start</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QGraphicsView" name="pic"/>
    </item>
