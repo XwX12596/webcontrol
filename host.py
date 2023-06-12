@@ -26,9 +26,11 @@ class StreamingOutput(object):
         return self.buffer.write(buf)
 
 def stream():
+    print("1")
     camera = picamera.PiCamera(resolution='640x480', framerate=24)
     output = StreamingOutput()
     camera.start_recording(output, format='mjpeg')
+    print("2")
     run(host='0.0.0.0', port=8000)
     camera.stop_recording()
 
