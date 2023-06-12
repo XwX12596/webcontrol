@@ -66,6 +66,7 @@ class picam_server():
     @route('/stream.mjpg')
     def stream():
         def generate():
+            print("Streaming")
             while True:
                 with output.condition:
                     output.condition.wait()
