@@ -25,7 +25,6 @@ class StreamingOutput(object):
             self.buffer.seek(0)
         return self.buffer.write(buf)
 
-@route('/stream.mjpg')
 def stream():
     def generate():
         while True:
@@ -49,7 +48,7 @@ class mjpg_stream(object):
         with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
             output = StreamingOutput()
             camera.start_recording(output, format='mjpeg')
-        run(host='0.0.0.0', port=25565)
+            stream()
 
     def stop(self):
         camera.stop_recording()
