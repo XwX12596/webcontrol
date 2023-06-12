@@ -38,7 +38,7 @@ def stream():
     response.set_header('Pragma', 'no-cache')
     response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
     return generate()
-class mjpg_stream():
+class mjpg_stream(object):
     def __init__():
         with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
             output = StreamingOutput()
