@@ -97,20 +97,20 @@ class picam_server():
             #fetch()
             print("autoFetching")
 
-    def start(self):
-        t1 = threading.Thread(target=self.host)
-        t1.daemon = True
-        t1.start()
-        t2 = threading.Thread(target=self.timer)
-        t2.daemon = True
-        t2.start()
-        while True:
-            try:
-                t2.join(0.1)
-            except KeyboardInterrupt:
-                print("end")
-                sys.exit(0)
+    # def start(self):
+    #     t1 = threading.Thread(target=self.host)
+    #     t1.daemon = True
+    #     t1.start()
+    #     t2 = threading.Thread(target=self.timer)
+    #     t2.daemon = True
+    #     t2.start()
+    #     while True:
+    #         try:
+    #             t2.join(0.1)
+    #         except KeyboardInterrupt:
+    #             print("end")
+    #             sys.exit(0)
 
 if __name__ == '__main__':
     server = picam_server()
-    server.start()
+    server.host()
