@@ -34,8 +34,8 @@ def index():
     return
 
 @route('/index.html')
-    def html_page():
-        return template("index")
+def html_page():
+    return template("index")
 
 @route('/stream.mjpg')
 def stream():
