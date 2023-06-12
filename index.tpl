@@ -35,6 +35,8 @@
         <button id='75' type="button">75</button>
         <button id='90' type="button">90</button>
         <br>
+	<img src="http://10.42.0.211:8000/stream.mjpg" width="640" height="480">
+	<br>
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
         <br>
