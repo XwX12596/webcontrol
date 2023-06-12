@@ -39,23 +39,27 @@ def html_page():
 
 @route('/stream.mjpg')
 def stream():
-    def generate():
-        while True:
-            with output.condition:
-                output.condition.wait()
-                frame = output.frame
-            yield b'--FRAME\r\n'
-            yield b'Content-Type: image/jpeg\r\n'
-            yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
-            yield frame
-            yield b'\r\n'
+    t1 = threading.Thread(target=threadingStream)
+    t1.daemon = True
+    t1.start()
+    def threadingStream():
+        def generate():
+            while True:
+                with output.condition:
+                    output.condition.wait()
+                    frame = output.frame
+                yield b'--FRAME\r\n'
+                yield b'Content-Type: image/jpeg\r\n'
+                yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
+                yield frame
+                yield b'\r\n'
 
-    response.status = 200
-    response.set_header('Age', '0')
-    response.set_header('Cache-Control', 'no-cache, private')
-    response.set_header('Pragma', 'no-cache')
-    response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
-    return generate()
+        response.status = 200
+        response.set_header('Age', '0')
+        response.set_header('Cache-Control', 'no-cache, private')
+        response.set_header('Pragma', 'no-cache')
+        response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
+        return generate()
 
 @post('/fetch')
 def picture():
