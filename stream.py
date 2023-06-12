@@ -39,9 +39,6 @@ def html_page():
 
 @route('/stream.mjpg')
 def stream():
-    t1 = threading.Thread(target=threadingStream)
-    t1.daemon = True
-    t1.start()
     def threadingStream():
         def generate():
             while True:
@@ -60,6 +57,9 @@ def stream():
         response.set_header('Pragma', 'no-cache')
         response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
         return generate()
+    t1 = threading.Thread(target=threadingStream)
+    t1.daemon = True
+    t1.start()
 
 @post('/fetch')
 def picture():
