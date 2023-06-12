@@ -9,7 +9,50 @@ from picam import fetch
 from motor import gs90_angle
 from bell import warning
 from threading import Condition
-from stream import mjpg_stream, StreamingOutput
+
+class StreamingOutput(object):
+    def __init__(self):
+        self.frame = None
+        self.buffer = io.BytesIO()
+        self.condition = Condition()
+
+    def write(self, buf):
+        if buf.startswith(b'\xff\xd8'):
+            self.buffer.truncate()
+            with self.condition:
+                self.frame = self.buffer.getvalue()
+                self.condition.notify_all()
+            self.buffer.seek(0)
+        return self.buffer.write(buf)
+
+@route('/stream.mjpg')
+def stream():
+    def generate():
+        while True:
+            with output.condition:
+                output.condition.wait()
+                frame = output.frame
+            yield b'--FRAME\r\n'
+            yield b'Content-Type: image/jpeg\r\n'
+            yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
+            yield frame
+            yield b'\r\n'
+
+    response.status = 200
+    response.set_header('Age', '0')
+    response.set_header('Cache-Control', 'no-cache, private')
+    response.set_header('Pragma', 'no-cache')
+    response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
+    return generate()
+class mjpg_stream(object):
+    def run(self):
+        with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+            output = StreamingOutput()
+            camera.start_recording(output, format='mjpeg')
+        run(host='0.0.0.0', port=25565)
+
+    def stop(self):
+        camera.stop_recording()
 
 class picam_server():
     def __init__(self):
@@ -48,27 +91,6 @@ class picam_server():
     def updateWait(time):
         print(time)
         self.fetchTime = time
-    
-    @route('/stream.mjpg')
-    def stream():
-        def generate():
-            while True:
-                with output.condition:
-                    output.condition.wait()
-                    frame = output.frame
-                    print(type(frame))
-                yield b'--FRAME\r\n'
-                yield b'Content-Type: image/jpeg\r\n'
-                yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
-                yield frame
-                yield b'\r\n'
-
-        response.status = 200
-        response.set_header('Age', '0')
-        response.set_header('Cache-Control', 'no-cache, private')
-        response.set_header('Pragma', 'no-cache')
-        response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
-        return generate()
 
     def streamStart(self):
         self.mjpg = mjpg_stream()
