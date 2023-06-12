@@ -69,14 +69,10 @@ class picam_server():
         t2 = threading.Thread(target=self.timer)
         t2.daemon = True
         t2.start()
-        t3 = threading.Thread(target=self.streamStart)
-        t3.daemon = True
-        t3.start()
         while True:
             try:
                 t2.join(0.1)
             except KeyboardInterrupt:
-                self.mjpg.stop()
                 print("end")
                 sys.exit(0)
 
