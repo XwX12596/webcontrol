@@ -89,9 +89,9 @@ class picam_server():
     def timer(self):
         while True:
             time.sleep(self.fetchTime)
-            fetch()
+            #fetch()
             print("autoFetching")
-    def runStream():
+    def runStream(self):
         with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
             output = StreamingOutput()
             camera.start_recording(output, format='mjpeg')
