@@ -9,7 +9,7 @@ from picam import fetch
 from motor import gs90_angle
 from bell import warning
 from threading import Condition
-from stream import mjpg_stream
+from stream import mjpg_stream, StreamingOutput
 
 class picam_server():
     def __init__(self):
