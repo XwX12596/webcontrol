@@ -25,12 +25,6 @@ class StreamingOutput(object):
             self.buffer.seek(0)
         return self.buffer.write(buf)
 
-def runStream():
-    with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
-        output = StreamingOutput()
-        camera.start_recording(output, format='mjpeg')
-        camera.stop_recording()
-
 class picam_server():
     def __init__(self):
         gs90_angle(45)
@@ -89,11 +83,6 @@ class picam_server():
         response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
         return generate()
 
-    def streamStart(self):
-        self.mjpg = mjpg_stream()
-        self.mjpg.run()
-        print("mjpg_stream running")
-
     def host(self):
         run(host='0.0.0.0', port=8000)
 
@@ -102,6 +91,11 @@ class picam_server():
             time.sleep(self.fetchTime)
             fetch()
             print("autoFetching")
+    def runStream():
+        with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+            output = StreamingOutput()
+            camera.start_recording(output, format='mjpeg')
+            camera.stop_recording()
     def start(self):
         t1 = threading.Thread(target=self.host)
         t1.daemon = True
@@ -109,7 +103,7 @@ class picam_server():
         t2 = threading.Thread(target=self.timer)
         t2.daemon = True
         t2.start()
-        t3 = threading.Thread(target=runStream)
+        t3 = threading.Thread(target=self.runStream)
         t3.daemon = True
         t3.start()
         while True:
