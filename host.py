@@ -5,7 +5,7 @@ import picamera
 import time
 import threading
 from lib.bottle import run, route, post, response, template
-from picam import fetch
+# from picam import fetch
 from motor import gs90_angle
 from bell import warning
 from threading import Condition
@@ -42,9 +42,9 @@ class picam_server():
     def html_page():
         return template("index")
 
-    @post('/fetch')
-    def picture():
-        fetch()
+    # @post('/fetch')
+    # def picture():
+    #     fetch()
 
     @post('/warning')
     def bell():
