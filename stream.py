@@ -39,11 +39,10 @@ def stream():
     response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
     return generate()
 class mjpg_stream(object):
-    def __init__():
+    def run():
         with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
             output = StreamingOutput()
             camera.start_recording(output, format='mjpeg')
-    def run():
         run(host='0.0.0.0', port=25565)
 
     def stop():
