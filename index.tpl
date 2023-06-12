@@ -35,6 +35,6 @@
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
         <br>
-        <img src="stream.mjpg" width="640" height="480">
+        <img src="http://127.0.0.1:25565/stream.mjpg" width="640" height="480">
 </body>
 </html>
