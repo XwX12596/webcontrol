@@ -91,6 +91,7 @@ class picam_server():
     def streamStart(self):
         self.mjpg = mjpg_stream()
         self.mjpg.run()
+        print("mjpg_stream running")
 
     def host(self):
         run(host='0.0.0.0', port=8000)
