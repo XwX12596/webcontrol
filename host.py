@@ -11,22 +11,6 @@ from bell import warning
 from threading import Condition
 from stream import mjpg_stream
 
-
-class StreamingOutput(object):
-    def __init__(self):
-        self.frame = None
-        self.buffer = io.BytesIO()
-        self.condition = Condition()
-
-    def write(self, buf):
-        if buf.startswith(b'\xff\xd8'):
-            self.buffer.truncate()
-            with self.condition:
-                self.frame = self.buffer.getvalue()
-                self.condition.notify_all()
-            self.buffer.seek(0)
-        return self.buffer.write(buf)
-
 class picam_server():
     def __init__(self):
         gs90_angle(45)
@@ -36,6 +20,12 @@ class picam_server():
 
     @route('/')
     def index():
+        response.status = 301
+        response.set_header('Location', '/index.html')
+        return
+
+    @route('/index.html')
+    def html_page():
         return template("index")
 
     @post('/fetch')
