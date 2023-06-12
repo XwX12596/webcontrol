@@ -1,8 +1,8 @@
 import io
 import sys
+import time
 import logging
 import picamera
-import time
 import threading
 from lib.bottle import run, route, post, response, template
 # from picam import fetch
@@ -25,16 +25,8 @@ class StreamingOutput(object):
             self.buffer.seek(0)
         return self.buffer.write(buf)
 
-def stream():
-    print("1")
-    camera = picamera.PiCamera(resolution='640x480', framerate=24)
-    output = StreamingOutput()
-    camera.start_recording(output, format='mjpeg')
-    print("2")
-    run(host='0.0.0.0', port=8000)
-    camera.stop_recording()
 
-#
+
 # class picam_server():
 #     def __init__(self):
 #         gs90_angle(45)
@@ -115,4 +107,9 @@ def stream():
     #             sys.exit(0)
 
 if __name__ == '__main__':
-    stream()
+    print("start")
+    camera = picamera.PiCamera(resolution='640x480', framerate=24)
+    output = StreamingOutput()
+    camera.start_recording(output, format='mjpeg')
+    run(host='0.0.0.0', port=8000)
+    camera.stop_recording()
