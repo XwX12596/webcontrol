@@ -10,7 +10,20 @@ from motor import gs90_angle
 from bell import warning
 from threading import Condition
 
+class StreamingOutput(object):
+    def __init__(self):
+        self.frame = None
+        self.buffer = io.BytesIO()
+        self.condition = Condition()
 
+    def write(self, buf):
+        if buf.startswith(b'\xff\xd8'):
+            self.buffer.truncate()
+            with self.condition:
+                self.frame = self.buffer.getvalue()
+                self.condition.notify_all()
+            self.buffer.seek(0)
+        return self.buffer.write(buf)
 
 # class picam_server():
 #     def __init__(self):
@@ -52,49 +65,42 @@ def updateWait(time):
 
 @route('/stream.mjpg')
 def startStream():
-    def Mystream():
-        def generate():
-            while True:
-                with output.condition:
-                    output.condition.wait()
-                    frame = output.frame
-                print("2")
-                yield b'--FRAME\r\n'
-                yield b'Content-Type: image/jpeg\r\n'
-                yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
-                yield frame
-                yield b'\r\n'
-        response.status = 200
-        response.set_header('Age', '0')
-        response.set_header('Cache-Control', 'no-cache, private')
-        response.set_header('Pragma', 'no-cache')
-        response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
-        return generate()
-    t_stream = threading.Thread(target=Mystream)
-    t_stream.daemon = True
-    print("stream_thread_starting!")
-    t_stream.start()
+    def generate():
+        while True:
+            with output.condition:
+                output.condition.wait()
+                frame = output.frame
+            yield b'--FRAME\r\n'
+            yield b'Content-Type: image/jpeg\r\n'
+            yield b'Content-Length: ' + str(len(frame)).encode() + b'\r\n\r\n'
+            yield frame
+            yield b'\r\n'
+    response.status = 200
+    response.set_header('Age', '0')
+    response.set_header('Cache-Control', 'no-cache, private')
+    response.set_header('Pragma', 'no-cache')
+    response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
+    return generate()
 
+  def timer(self):
+      while True:
+          time.sleep(self.fetchTime)
+          #fetch()
+          print("autoFetching")
 
-# def timer(self):
-#     while True:
-#         time.sleep(self.fetchTime)
-#         #fetch()
-#         print("autoFetching")
-
-    # def start(self):
-    #     t1 = threading.Thread(target=self.host)
-    #     t1.daemon = True
-    #     t1.start()
-    #     t2 = threading.Thread(target=self.timer)
-    #     t2.daemon = True
-    #     t2.start()
-    #     while True:
-    #         try:
-    #             t2.join(0.1)
-    #         except KeyboardInterrupt:
-    #             print("end")
-    #             sys.exit(0)
+    def start(self):
+        t1 = threading.Thread(target=self.host)
+        t1.daemon = True
+        t1.start()
+        t2 = threading.Thread(target=self.timer)
+        t2.daemon = True
+        t2.start()
+        while True:
+            try:
+                t2.join(0.1)
+            except KeyboardInterrupt:
+                print("end")
+                sys.exit(0)
 
 if __name__ == '__main__':
     print("start")
