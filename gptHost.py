@@ -27,12 +27,12 @@ class StreamingOutput(object):
 @route('/')
 def index():
     response.status = 301
-    response.set_header('Location', '/index.html')
+    response.set_header('Location', '/stream.html')
     return
 
-@route('/index.html')
+@route('/stream.html')
 def html_page():
-    return template("index")
+    return template("stream")
 
 @post('/warning')
 def bell():
@@ -52,7 +52,7 @@ def updateWait(time):
     self.fetchTime = time
 
 @route('/stream.mjpg')
-def startStream():
+def startStream(): #向用户不断发送.mjpg图像，形成图片流，做到实时监控
     def generate():
         while True:
             with output.condition:
