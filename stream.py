@@ -5,8 +5,6 @@ import logging
 import picamera
 import threading
 from lib.bottle import run, route, post, response, template
-from motor import gs90_angle
-from bell import warning
 from threading import Condition
 
 class StreamingOutput(object):
@@ -34,23 +32,6 @@ def index():
 def html_page():
     return template("stream")
 
-@post('/warning')
-def bell():
-    warning()
-
-@post('/<angle:re:[0-9]+>')
-def moveCam(angle):
-    print(angle)
-    gs90_angle(int(angle))
-    time.sleep(0.3)
-    gs90_angle('stop')
-    gs90_pwm.stop()
-
-@post('/<time:re:updateWait[0-9]*>')
-def updateWait(time):
-    print(time)
-    self.fetchTime = time
-
 @route('/stream.mjpg')
 def startStream(): #向用户不断发送.mjpg图像，形成图片流，做到实时监控
     def generate():
@@ -71,28 +52,12 @@ def startStream(): #向用户不断发送.mjpg图像，形成图片流，做到�
     response.set_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
     return generate()
 
-def start_server():
-    run(host='0.0.0.0', port=8000)
 
 if __name__ == '__main__':
     print("start")
     camera = picamera.PiCamera(resolution='640x480', framerate=24)
     output = StreamingOutput()
     camera.start_recording(output, format='mjpeg')
-
-    t_stream = threading.Thread(target=startStream)
-    t_stream.daemon = True
-    t_stream.start()
-
-    t_server = threading.Thread(target=start_server)
-    t_server.daemon = True
-    t_server.start()
-
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        camera.stop_recording()
+    run(host='0.0.0.0', port=8000)
+    camera.stop_recording()
 

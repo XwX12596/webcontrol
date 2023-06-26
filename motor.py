@@ -14,6 +14,7 @@ def sg90_angle(angle):
     if isinstance(angle, str):  
             sg90_pwm.ChangeDutyCycle(0) #占空比设置为0 
     elif isinstance(angle, int) or isinstance(angle, float):  
-        if (angle >= 0 and angle <= 180) #角度设置在0~180度之间
+        if (angle >= 0 and angle <= 180): 
+            #角度设置在0~180度之间
             sg90_pwm.ChangeDutyCycle(2.5 + angle * 10 / 180) 
             #占空比在2.5%到12.5%之间变化，对应脉冲长度为0.5ms到2.5ms之间

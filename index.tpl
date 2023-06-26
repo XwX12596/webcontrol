@@ -35,6 +35,6 @@
         <button id='fetch' type="button">FETCH</button>
         <button id='warning' type="button">!WARNING!</button>
         <br>
-        <img src="resutl.jpg" width="640" height="480">
+        <img src="result.jpg" width="640" height="480">
 </body>
 </html>

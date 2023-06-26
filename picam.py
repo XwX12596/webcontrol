@@ -31,5 +31,5 @@ def fetch():
     if GetFace(imname=pic_name) == 1: #检查人脸返回1, 则向微信小程序发送GET请求, 产生APP推送
         f = open("sendkey")
         sendkey = f.read()
-        get_url = "https://sctapi.ftqq.com/" + sendkey + ".send?title=warning"
+        get_url = "https://sctapi.ftqq.com/" + sendkey + ".send?title=识别到人脸"
         req("GET", get_url)
